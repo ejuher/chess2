@@ -1,3 +1,5 @@
+require './pieces'
+
 class Board
   attr_reader :rows
 
@@ -54,65 +56,27 @@ class Board
 
   def move(start, end_pos)
   end
-end
-
-class Piece
-  def initialize(board, position, color)
-    @board = board
-    @position = position
-    @color = color
-  end
-
-  def moves
+  
+  #return a 1d array of all pieces on the board
+  def all_pieces
+    rows.flatten.compact
   end
   
-  def to_s
-    @color[0] + to_c
+  def dup
+    board_copy = rows.dup
+    all_pieces.each do |piece|
+      piece_copy = piece.dup
+      piece_copy.position = piece.position.dup
+      board_copy[piece.position[0]][piece.position[1]] = piece_copy
+    end
+    
+    board_copy.flatten.compact.each do |copied_piece|
+      copied_piece.board = board_copy
+    end
   end
 end
 
-class SlidingPiece < Piece
-  def move_dirs
-  end
-end
+b = Board.new
 
-class SteppingPiece < Piece
-  def move_dirs
-  end
-end
-
-class Bishop < SlidingPiece
-  def to_c
-    "b"
-  end
-end
-
-class Rook < SlidingPiece
-  def to_c
-    "r"
-  end
-end
-
-class Queen < SlidingPiece
-  def to_c
-    "q"
-  end
-end
-
-class Knight < SteppingPiece
-  def to_c
-    "k"
-  end
-end
-
-class King < SteppingPiece
-  def to_c
-    "K"
-  end
-end
-
-class Pawn < Piece
-  def to_c
-    "p"
-  end
-end
+p b.object_id
+p b.dup.object_id
