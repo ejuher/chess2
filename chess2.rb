@@ -1,4 +1,13 @@
-require './pieces'
+require "./Pawn"
+require "./King"
+require "./Knight"
+require "./Queen"
+require "./Rook"
+require "./Bishop"
+require "./SteppingPiece"
+require "./SlidingPiece"
+require "./Piece"
+
 
 class Board
   attr_reader :rows
@@ -11,7 +20,7 @@ class Board
     @rows = Array.new(8) { Array.new(8) }
 
     [:white, :black].each do |color|
-      # place_pawns(color)
+      place_pawns(color)
       place_royalty(color)
     end
   end
@@ -86,4 +95,4 @@ end
 
 b = Board.new
 p b
-p b.rows[0][1].moves
+p b.rows[1][1].moves
