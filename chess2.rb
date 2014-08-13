@@ -15,12 +15,6 @@ class Board
       place_royalty(color)
     end
   end
-  
-  # def to_s
-  #   @rows.each do |row|
-  #     row.join(' ')
-  #   end
-  # end
 
   def place_pawns(color)
     color == :white ? row = 1 : row = 6
@@ -40,16 +34,32 @@ class Board
       @rows[row][6] = Knight.new(@rows, [row, 6], color)
       @rows[row][7] = Rook.new(@rows, [row, 7], color)
   end
+  
+  def occupied?(color)
+    
+  end
 
   # def [](pos)
   #   row, col = pos
   #   @rows[row][col]
   # end
-  #
+  
   # def []=(pos, value)
   #   row, col = pos
   #   @rows[row][col] = value
   # end
+  
+  def to_s
+    @rows.map do |row|
+      row.each do |space|
+        if space.nil?
+          "  "
+        else
+          space.to_s
+        end
+      end.join(' ') + "\n"
+    end.reverse.join
+  end
 
   def in_check?(color)
   end
@@ -77,6 +87,5 @@ class Board
 end
 
 b = Board.new
-
-p b.object_id
-p b.dup.object_id
+p b
+p b.rows[0][4].moves
