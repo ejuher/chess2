@@ -4,8 +4,6 @@ require "./Knight"
 require "./Queen"
 require "./Rook"
 require "./Bishop"
-# require "./SteppingPiece"
-# require "./SlidingPiece"
 require "./Piece"
 
 
