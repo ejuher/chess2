@@ -10,17 +10,18 @@ require "./Piece"
 
 
 class Board
-  attr_reader :rows
-
+  attr_accessor :rows
+  
   def initialize(should_setup = true)
+    @rows = Array.new(8) { Array.new(8) }
     setup_board if should_setup
   end
-
+  
   def setup_board
-    @rows = Array.new(8) { Array.new(8) }
+    # @rows = Array.new(8) { Array.new(8) }
 
     [:white, :black].each do |color|
-      place_pawns(color)
+      # place_pawns(color)
       place_royalty(color)
     end
   end
@@ -71,9 +72,28 @@ class Board
   end
 
   def in_check?(color)
+    king = all_pieces.select do |piece| 
+      piece.is_a?(King) && piece.color == color 
+    end.first
+
+    all_pieces.each do |piece| 
+      if piece.color != color && piece.moves.include?(king.pos) 
+        return true
+      end
+    end
+    
+    false
   end
 
   def move(start, end_pos)
+    
+  end
+  
+  def force_move(start, end_pos)
+    
+    rows[end_pos[0]][end_pos[1]] = rows[start[0]][start[1]]
+    rows[start[0]][start[1]].pos = end_pos
+    rows[start[0]][start[1]] = nil
   end
   
   #return a 1d array of all pieces on the board
@@ -83,11 +103,12 @@ class Board
   
   def dup
     board_copy = self.class.new(false)
+    # board_copy = self.dup
     all_pieces.each do |piece|
-      piece_copy = piece.dup
-      piece_copy.position = piece.position.dup
-      board_copy.rows[piece.position[0]][piece.position[1]] = piece_copy
-      piece_copy.board = board_copy
+
+      piece_copy = piece.class.new(board_copy, piece.pos.dup, piece.color)
+      board_copy.rows[piece.pos[0]][piece.pos[1]] = piece_copy
+      
     end
     board_copy
   end
@@ -95,4 +116,7 @@ end
 
 b = Board.new
 p b
-p b.rows[1][1].moves
+
+# b.all_pieces.each { |piece| puts piece.class }
+p b.rows[0][4].move_into_check?([0,3])
+# p b.in_check?(:white)
