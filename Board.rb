@@ -4,8 +4,8 @@ require "./Knight"
 require "./Queen"
 require "./Rook"
 require "./Bishop"
-require "./SteppingPiece"
-require "./SlidingPiece"
+# require "./SteppingPiece"
+# require "./SlidingPiece"
 require "./Piece"
 
 
@@ -21,7 +21,7 @@ class Board
     # @rows = Array.new(8) { Array.new(8) }
 
     [:white, :black].each do |color|
-      # place_pawns(color)
+      place_pawns(color)
       place_royalty(color)
     end
   end
@@ -61,7 +61,7 @@ class Board
   
   def to_s
     @rows.map do |row|
-      row.each do |space|
+      row.map do |space|
         if space.nil?
           "  "
         else
@@ -85,12 +85,28 @@ class Board
     false
   end
 
+  def checkmate?(color)
+    color_pieces = all_pieces.select { |piece| piece.color == color }
+    color_pieces.map do |piece|
+      piece.valid_moves
+    end.flatten.empty?
+  end
+
   def move(start, end_pos)
-    
+    #still must check if it is the piece's turn
+
+    if rows[start[0]][start[1]].nil?
+      raise ArgumentError.new "No piece at starting location"
+    end
+
+    unless rows[start[0]][start[1]].valid_moves.include?(end_pos)
+      raise ArgumentError.new "It is not legal to move to that position"
+    end
+
+    force_move(start, end_pos)
   end
   
   def force_move(start, end_pos)
-    
     rows[end_pos[0]][end_pos[1]] = rows[start[0]][start[1]]
     rows[start[0]][start[1]].pos = end_pos
     rows[start[0]][start[1]] = nil
@@ -114,9 +130,34 @@ class Board
   end
 end
 
-b = Board.new
-p b
 
-# b.all_pieces.each { |piece| puts piece.class }
-p b.rows[0][4].move_into_check?([0,3])
-# p b.in_check?(:white)
+
+b = Board.new
+puts b
+puts ""
+b.move([1,5],[2,5])
+puts b
+puts "checkmate?(white) = #{b.checkmate?(:white)}"
+puts "checkmate?(black) = #{b.checkmate?(:black)}"
+puts ""
+b.move([6,4],[4,4])
+puts b
+puts "checkmate?(white) = #{b.checkmate?(:white)}"
+puts "checkmate?(black) = #{b.checkmate?(:black)}"
+puts ""
+b.move([1,6],[3,6])
+puts b
+puts "checkmate?(white) = #{b.checkmate?(:white)}"
+puts "checkmate?(black) = #{b.checkmate?(:black)}"
+puts ""
+# puts b.rows[7][3]
+# p b.rows[7][3].valid_moves
+b.move([7,3],[3,7])
+puts b
+puts "checkmate?(white) = #{b.checkmate?(:white)}"
+puts "checkmate?(black) = #{b.checkmate?(:black)}"
+
+# puts "#{ b.rows[0][4] }.moves #{ b.rows[0][4].moves }"
+
+# (0..7).each { |c| puts "#{b.rows[0][c]} #{b.rows[0][c].valid_moves}" }
+

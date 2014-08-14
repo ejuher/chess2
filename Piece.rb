@@ -15,8 +15,6 @@ class Piece
   def move_into_check?(new_pos)
     #duplicate the board and perform the move
     board_copy = board.dup
-    # board_copy.rows[pos[0]][pos[1]] = nil
-    # board_copy.rows[new_pos[0]][new_pos[1]] = self
     board_copy.force_move(pos, new_pos)
     board_copy.in_check?(color)
   end
@@ -26,7 +24,7 @@ class Piece
   end
 
   def valid_moves
-    moves
+    moves.reject { |move| move_into_check?(move) }
   end
   
   def to_s
